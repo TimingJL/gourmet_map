@@ -5,6 +5,17 @@
 $ rails new gourmet_map
 ```
 
+### Add some gems
+```console
+gem 'therubyracer'
+gem 'devise'
+gem 'simple_form', github: 'kesha-antonov/simple_form', branch: 'rails-5-0'
+gem 'haml', '~> 4.0.5'
+gem 'bootstrap-sass', '~> 3.2.0.2'
+gem 'paperclip', '~> 4.2.0'
+gem 'acts_as_votable', '~> 0.10.0'
+```
+
 ```console
 Under `Gemfile`, add `gem 'therubyracer'`, save and run `bundle install`.      
 

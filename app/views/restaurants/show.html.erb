@@ -1,6 +1,11 @@
 <p id="notice"><%= notice %></p>
 
 <p>
+  <strong>Image:</strong>
+  <%= image_tag @restaurant.image.url(:small) %>
+</p>
+
+<p>
   <strong>Name:</strong>
   <%= @restaurant.name %>
 </p>

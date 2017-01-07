@@ -242,7 +242,7 @@ In `app/views/layouts/application.html.erb`
 		                <span class="icon-bar"></span>
 		                <span class="icon-bar"></span>
 		            </button>
-		            <a class="navbar-brand" href="#">東港巴豆腰</a>
+		            <a><%= link_to '東港巴豆腰', root_path, class: "navbar-brand"%></a>
 		        </div>
 		        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		            <ul class="nav navbar-nav">
@@ -256,6 +256,7 @@ In `app/views/layouts/application.html.erb`
 		                </li>
 		            </ul>
 		            <ul class="nav navbar-nav navbar-right">
+		            	<li><%= link_to 'New Restaurant', new_restaurant_path %></li>
 		                <form class="navbar-form navbar-left" role="search">
 		                    <div class="form-group">
 		                        <input type="text" class="form-control" placeholder="Search">
@@ -273,3 +274,120 @@ In `app/views/layouts/application.html.erb`
 	</html>
 ```
 ![image](https://github.com/TimingJL/gourmet_map/blob/master/pic/rwd_navbar.jpeg)
+
+
+# Basic Styling
+
+### Masonry
+
+Masonry is a light-weight layout framework which wraps AutoLayout with a nicer syntax.
+
+https://github.com/kristianmandrup/masonry-rails      
+
+Let's go to our Gemfile, we need a gem called masonry-rails.
+In Gemfile, we add this line, run `bundle install` and restart the server.
+```
+gem 'masonry-rails', '~> 0.2.1'
+```
+
+In app/assets/javascripts/application.js, under jquery, we add `//= require masonry/jquery.masonry`
+```js
+//= require jquery
+//= require bootstrap-sprockets
+//= require jquery_ujs
+//= require masonry/jquery.masonry
+//= require turbolinks
+//= require_tree .
+```
+
+In `app/assets/stylesheets/application.css.scss`
+```scss
+#restaurants {
+  margin: 0 auto;
+  width: 100%;
+  .box {
+      margin: 10px;
+      width: 350px;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+      border-radius: 7px;
+      text-align: center;
+      text-decoration:none;
+      img {
+        max-width: 100%;
+        height: 200px;
+      }
+      h2 {
+        font-size: 22px;
+        margin: 0;
+        padding: 20px 10px;
+        a {
+                color: #474747;
+                text-decoration:none;
+        }
+      }
+      .detail {
+        font-size: 12px;
+        border-top: 1px solid #EAEAEA;
+            padding: 0px;
+            margin: 0;
+      }     
+    }
+}
+
+textarea {
+    min-height: 250px;
+}
+```
+
+In `app/views/restaurants/index.html.erb`
+```html
+
+	<p id="notice"><%= notice %></p>
+
+	<div class="transitions-enabled" id="restaurants">
+	  <% @restaurants.each do |restaurant| %> 
+	    <div class="box panel panel-default">
+	      <% if restaurant.image.present? %>
+	        <%= link_to (image_tag restaurant.image.url(:small) , width: '100%'), restaurant %>
+	      <% else %>
+	        <%= link_to restaurant.name, restaurant %>
+	      <% end %>
+	        <h2>
+	          <%= link_to restaurant.name, restaurant %>
+	        </h2>   
+
+	        <p class="detail"></p>   
+	        <div class="panel-body">        
+	          <h4>種類:
+	            <%= restaurant.category.name %>
+	          </h4>    
+	          <h4>電話1:
+	            <%= restaurant.phone1 %>
+	          </h4>
+	          <h4>電話2:
+	            <%= restaurant.phone2 %>
+	          </h4> 
+	          <h4>素食？:
+	            <%= restaurant.vegetarian %>
+	          </h4>                                      
+	        </div>
+	        <p class="detail"></p> 
+	      <div class="btn-group">
+	        <button type="button" class="btn btn-secondary"><%= link_to 'Show', restaurant %></button>
+	        <button type="button" class="btn btn-info"><%= link_to 'Edit', edit_restaurant_path(restaurant) %></button>
+	        <button type="button" class="btn btn-danger"><%= link_to 'Destroy', restaurant, method: :delete, data: { confirm: 'Are you sure?' } %></button>
+	      </div>
+	    </div>
+	  <% end %>
+	</div>
+```
+
+To get this work, I'm going to add some styling and coffescript. In `app/assets/javascripts/restaurants.coffee`
+```coffee
+$ ->
+  $('#restaurants').imagesLoaded ->
+    $('#restaurants').masonry
+      itemSelector: '.box'
+      isFitWidth: true
+```
+![image](https://github.com/TimingJL/gourmet_map/blob/master/pic/basic_styling.jpeg)

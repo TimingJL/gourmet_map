@@ -1,41 +1,38 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Restaurants</h1>
+<div class="transitions-enabled" id="restaurants">
+  <% @restaurants.each do |restaurant| %> 
+    <div class="box panel panel-default">
+      <% if restaurant.image.present? %>
+        <%= link_to (image_tag restaurant.image.url(:small) , width: '100%'), restaurant %>
+      <% else %>
+        <%= link_to restaurant.name, restaurant %>
+      <% end %>
+        <h2>
+          <%= link_to restaurant.name, restaurant %>
+        </h2>   
 
-<table>
-  <thead>
-    <tr>
-      <th>Image</th>
-      <th>Name</th>
-      <th>Category</th>
-      <th>Address</th>
-      <th>Phone1</th>
-      <th>Phone2</th>
-      <th>Note</th>
-      <th>Vegetarian</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @restaurants.each do |restaurant| %>
-      <tr>
-        <td><%= image_tag restaurant.image.url(:small) %></td>
-        <td><%= restaurant.name %></td>     
-        <td><%= restaurant.category.name %></td>
-        <td><%= restaurant.address %></td>
-        <td><%= restaurant.phone1 %></td>
-        <td><%= restaurant.phone2 %></td>
-        <td><%= restaurant.note %></td>
-        <td><%= restaurant.vegetarian %></td>
-        <td><%= link_to 'Show', restaurant %></td>
-        <td><%= link_to 'Edit', edit_restaurant_path(restaurant) %></td>
-        <td><%= link_to 'Destroy', restaurant, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-
-<%= link_to 'New Restaurant', new_restaurant_path %>
+        <p class="detail"></p>   
+        <div class="panel-body">        
+          <h4>種類:
+            <%= restaurant.category.name %>
+          </h4>    
+          <h4>電話1:
+            <%= restaurant.phone1 %>
+          </h4>
+          <h4>電話2:
+            <%= restaurant.phone2 %>
+          </h4> 
+          <h4>素食？:
+            <%= restaurant.vegetarian %>
+          </h4>                                      
+        </div>
+        <p class="detail"></p> 
+      <div class="btn-group">
+        <button type="button" class="btn btn-secondary"><%= link_to 'Show', restaurant %></button>
+        <button type="button" class="btn btn-info"><%= link_to 'Edit', edit_restaurant_path(restaurant) %></button>
+        <button type="button" class="btn btn-danger"><%= link_to 'Destroy', restaurant, method: :delete, data: { confirm: 'Are you sure?' } %></button>
+      </div>
+    </div>
+  <% end %>
+</div>

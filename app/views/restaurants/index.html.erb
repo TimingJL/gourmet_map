@@ -7,6 +7,7 @@
     <tr>
       <th>Image</th>
       <th>Name</th>
+      <th>Category</th>
       <th>Address</th>
       <th>Phone1</th>
       <th>Phone2</th>
@@ -21,6 +22,7 @@
       <tr>
         <td><%= image_tag restaurant.image.url(:small) %></td>
         <td><%= restaurant.name %></td>
+        <td><%= restaurant.category.name %></td>
         <td><%= restaurant.address %></td>
         <td><%= restaurant.phone1 %></td>
         <td><%= restaurant.phone2 %></td>

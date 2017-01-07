@@ -121,3 +121,71 @@ In `app/views/restaurants/index.html.erb`, we add `Image` and `<td><%= image_tag
 	</table>
 ```
 ![image](https://github.com/TimingJL/gourmet_map/blob/master/pic/image_uploading.jpeg)
+
+
+# Categories
+Next thing we want to do is to add categories for our restaurants.
+First thing we need to create a model.
+```console
+$ rails g model category name:string
+$ rake db:migrate
+```
+
+Next, what we wanna do is add the category ID column to our restaurant's table.
+```console
+$ rails g migration add_category_id_to_restaurants category_id:integer
+$ rake db:migrate
+```
+
+Then we need to add association between our categories and our restaurants's model.
+In `app/models/category.rb`
+```ruby
+class Category < ApplicationRecord
+    has_many :restaurants
+end
+```
+In `app/models/restaurant.rb`
+```ruby
+class Restaurant < ApplicationRecord
+	belongs_to :category
+	has_attached_file :image, styles: { medium: "700x500#", small: "350x250>" }
+    validates_attachment_content_type :image, content_type: /\Aimage\/.*\Z/ 
+end
+```
+
+So let's go into our rails console:
+```console
+$ rails c
+
+> Category.connection
+> Category
+> Category.create(name: "飲料店")
+> Category.create(name: "早餐店")
+> Category.create(name: "小吃店")
+> Category.create(name: "便當店")
+> Category.create(name: "麵食館")
+
+> Category.all
+```
+
+Next, what we want to do is for each new restaurant that is created we want to add the `category ID` to that specific restaurant.
+In `app/views/jobs/_form.html.erb`
+```html
+
+  <div class="field">
+    <%= f.label :category_id %>
+    <%= f.collection_select  :category_id, Category.all, :id, :name, {promt: "Choose a category" } %>
+  </div>
+```
+
+Next, let's go to the `app/controllers/jobs_controller.rb`, we need to add the `category_id` in private action restaurant_params.
+```ruby
+def restaurant_params
+  params.require(:restaurant).permit(:category_id, :image, :name, :address, :phone1, :phone2, :note, :vegetarian)
+end
+```
+
+To show the category on the index page, we add `<th>Category</th>` and `<td><%= restaurant.category.name %></td>` to the `index.html.erb`
+
+![image](https://github.com/TimingJL/gourmet_map/blob/master/pic/select.jpeg)
+![image](https://github.com/TimingJL/gourmet_map/blob/master/pic/category.jpeg)

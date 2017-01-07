@@ -121,3 +121,81 @@ In `app/views/restaurants/index.html.erb`, we add `Image` and `<td><%= image_tag
 	</table>
 ```
 ![image](https://github.com/TimingJL/gourmet_map/blob/master/pic/image_uploading.jpeg)
+
+# Categories
+The next thing we need to do is add categories to our restaurants.
+To do that, I'm going to create a model for our categories.
+```console
+$ rails g model Category name:string
+$ rake db:migrate
+```
+
+Then we need to add a category_id to our article's table. That is bacause we wanna associate the categories to the restaurants.
+```console
+$ rails g migration add_category_id_to_restaurants category_id:integer
+$ rake db:migrate
+```
+
+In `app/models/restaurant.rb`
+```ruby
+class Restaurant < ApplicationRecord
+	belongs_to :category
+	has_attached_file :image, styles: { medium: "700x500#", small: "350x250>" }
+    validates_attachment_content_type :image, content_type: /\Aimage\/.*\Z/ 
+end
+```
+
+In `app/models/category.rb`
+```ruby
+class Category < ApplicationRecord
+	has_many :restaurants
+end
+```
+
+Let's pop into the rails console to create a few categories to work with.
+```console
+$ rails c
+
+> Category.connection
+> Category.create(name: "飲料店")
+> Category.create(name: "早餐店")
+> Category.create(name: "小吃店")
+> Category.create(name: "餐廳/便當/小館")
+
+> Category.all
+
+#if you want to delete the cateory of ID=1.
+> Category.delete(1)
+```
+
+In `app/controllers/restaurants_controller.rb`, we need to permit the category_id so it can save to the database, otherwise rails will ignore it.
+```ruby
+def restaurant_params
+  params.require(:restaurant).permit(:category_id, :image, :name, :address, :phone1, :phone2, :note, :vegetarian)
+end
+```
+
+To show the category, we need to add selected field in create/edit page and add column to the show/root page.
+
+In `app/views/_form.html.erb`
+```html
+
+  <div class="field">
+    <%= f.label :category_id %>
+    <%= f.collection_select :category_id, Category.all, :id, :name, { promt: "Choose a category" } %>
+  </div>
+```
+
+In `app/views/show.html.erb`
+```html
+
+	<p>
+	  <strong>Category:</strong>
+	  <%= @restaurant.category.name %>
+	</p>
+```
+
+In `app/views/index.html.erb`, we add `<th>Category</th>` and `<td><%= restaurant.category.name %></td>` to the table.
+
+![image](https://github.com/TimingJL/gourmet_map/blob/master/pic/select.jpeg)
+![image](https://github.com/TimingJL/gourmet_map/blob/master/pic/category.jpeg)

@@ -12,8 +12,13 @@
   <% end %>
 
   <div class="field">
+    <%= f.label :category %>
+    <%= f.collection_select :category_id, Category.all, :id, :name, { promt: "Choose a category" } %>
+  </div>
+
+  <div class="field">
     <%= f.label :image %>
-    <%= f.text_field :image %>
+    <%= f.url_field :image %>
   </div>
 
   <div class="field">
@@ -28,12 +33,12 @@
 
   <div class="field">
     <%= f.label :phone1 %>
-    <%= f.text_field :phone1 %>
+    <%= f.telephone_field :phone1 %>
   </div>
 
   <div class="field">
     <%= f.label :phone2 %>
-    <%= f.text_field :phone2 %>
+    <%= f.telephone_field :phone2 %>
   </div>
 
   <div class="field">
